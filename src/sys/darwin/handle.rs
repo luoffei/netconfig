@@ -5,6 +5,7 @@ use crate::{Error, Interface};
 use advmac::MacAddr6;
 use delegate::delegate;
 use ipnet::IpNet;
+use nix::net::if_::InterfaceFlags;
 use nix::sys::socket::{SockaddrIn, SockaddrIn6};
 use std::net;
 use std::os::unix::io::AsRawFd;
@@ -13,6 +14,7 @@ pub trait InterfaceExt {
     fn set_up(&self, v: bool) -> Result<(), Error>;
     fn set_running(&self, v: bool) -> Result<(), Error>;
     fn alias(&self) -> Result<String, Error>;
+    fn set_flags(&self, flags: InterfaceFlags) -> Result<InterfaceFlags, Error>;
 }
 
 impl InterfaceHandle {
@@ -80,5 +82,9 @@ impl InterfaceExt for Interface {
             fn set_up(&self, v: bool) -> Result<(), Error>;
             fn set_running(&self, v: bool) -> Result<(), Error>;
         }
+    }
+    
+    fn set_flags(&self, flags: InterfaceFlags) -> Result<InterfaceFlags, Error> {
+        self.0.set_flags(flags)
     }
 }
